@@ -39,6 +39,10 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.Favorites = void 0;
 var typeorm_1 = require("typeorm");
 var Favorite_1 = require("../../entity/Favorite");
+var axios = require("axios").default;
+var data = axios.get("https://api.nomics.com/v1/currencies/ticker?key=a8a3452e71305947867f9f04df8fd319&ids=BTC")
+    .then(function (response) { console.log(response.data[0]); })
+    .catch(function (err) { console.log(err); });
 var favorite = new Favorite_1.Favorite;
 var Favorites = /** @class */ (function () {
     function Favorites() {
@@ -54,6 +58,19 @@ var Favorites = /** @class */ (function () {
                     case 1:
                         results = _a.sent();
                         return [2 /*return*/, res.json(results)];
+                }
+            });
+        });
+    };
+    Favorites.prototype.getFavorite = function (req, res) {
+        return __awaiter(this, void 0, void 0, function () {
+            var favorites;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0: return [4 /*yield*/, typeorm_1.getRepository(Favorite_1.Favorite).find()];
+                    case 1:
+                        favorites = _a.sent();
+                        return [2 /*return*/, res.json(favorites)];
                 }
             });
         });
