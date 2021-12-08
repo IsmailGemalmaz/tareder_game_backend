@@ -60,6 +60,7 @@ var typeorm_1 = require("typeorm");
 var User_1 = require("../entity/User");
 var nodemailer = __importStar(require("nodemailer"));
 var user = new User_1.User;
+
 var Users = /** @class */ (function () {
     function Users() {
     }

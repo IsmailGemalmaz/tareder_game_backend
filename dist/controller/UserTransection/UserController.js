@@ -1,4 +1,23 @@
 "use strict";
+var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    Object.defineProperty(o, k2, { enumerable: true, get: function() { return m[k]; } });
+}) : (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    o[k2] = m[k];
+}));
+var __setModuleDefault = (this && this.__setModuleDefault) || (Object.create ? (function(o, v) {
+    Object.defineProperty(o, "default", { enumerable: true, value: v });
+}) : function(o, v) {
+    o["default"] = v;
+});
+var __importStar = (this && this.__importStar) || function (mod) {
+    if (mod && mod.__esModule) return mod;
+    var result = {};
+    if (mod != null) for (var k in mod) if (k !== "default" && Object.prototype.hasOwnProperty.call(mod, k)) __createBinding(result, mod, k);
+    __setModuleDefault(result, mod);
+    return result;
+};
 var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
     function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
     return new (P || (P = Promise))(function (resolve, reject) {
@@ -39,6 +58,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.Users = void 0;
 var typeorm_1 = require("typeorm");
 var User_1 = require("../../entity/User");
+var jwt = __importStar(require("jsonwebtoken"));
 var user = new User_1.User;
 var Users = /** @class */ (function () {
     function Users() {
@@ -76,15 +96,22 @@ var Users = /** @class */ (function () {
     //  //kullanıcı oluşturulur
     Users.prototype.createUsers = function (req, res) {
         return __awaiter(this, void 0, void 0, function () {
-            var newUser, results;
+            var results, newUser, err_1;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
+                        _a.trys.push([0, 2, , 3]);
                         newUser = typeorm_1.getRepository(User_1.User).create(req.body);
                         return [4 /*yield*/, typeorm_1.getRepository(User_1.User).save(newUser)];
                     case 1:
+                        // newUser.password=await bcrypt.hash(newUser.password,5);
                         results = _a.sent();
-                        return [2 /*return*/, res.json(results)];
+                        return [3 /*break*/, 3];
+                    case 2:
+                        err_1 = _a.sent();
+                        console.log(err_1 + "hata");
+                        return [3 /*break*/, 3];
+                    case 3: return [2 /*return*/, res.json(results)];
                 }
             });
         });
@@ -126,23 +153,23 @@ var Users = /** @class */ (function () {
     //kullanıcı login
     Users.prototype.loginUser = function (req, res) {
         return __awaiter(this, void 0, void 0, function () {
-            var eposta, password, result;
+            var token, err, find;
             return __generator(this, function (_a) {
                 switch (_a.label) {
-                    case 0: return [4 /*yield*/, typeorm_1.getRepository(User_1.User).findOne(req.body.eposta)];
+                    case 0: return [4 /*yield*/, typeorm_1.getRepository(User_1.User).findOne(req.body)];
                     case 1:
-                        eposta = _a.sent();
-                        return [4 /*yield*/, typeorm_1.getRepository(User_1.User).findOne(req.body.password)];
+                        find = _a.sent();
+                        if (!find) return [3 /*break*/, 3];
+                        return [4 /*yield*/, jwt.sign({ id: find.id, email: find.eposta, firstName: find.firstName, lastName: find.lastName }, '1234567!+^&%+/(^&+/safjshfbaösmç.mşlkşlkd', { expiresIn: '1h' })];
                     case 2:
-                        password = _a.sent();
-                        result = "";
-                        if (eposta && password) {
-                            result = "kullanıcı girişi yapıldı";
-                        }
-                        else {
-                            result = "hata";
-                        }
-                        return [2 /*return*/, res.json(result)];
+                        token = _a.sent();
+                        err = false;
+                        return [3 /*break*/, 4];
+                    case 3:
+                        err = true;
+                        console.log(err);
+                        _a.label = 4;
+                    case 4: return [2 /*return*/, res.json({ "user": find, token: token, err: err })];
                 }
             });
         });

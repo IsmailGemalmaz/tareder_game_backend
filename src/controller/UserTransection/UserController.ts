@@ -3,6 +3,8 @@ import {getRepository} from 'typeorm';
 import {User} from '../../entity/User';
 import * as jwt from 'jsonwebtoken';
 import * as nodemailer from 'nodemailer';
+import * as bcrypt from 'bcrypt';
+import { Console } from 'console';
 
 const user=new User;
 
@@ -22,11 +24,20 @@ export  class Users {
 
     //  //kullanıcı oluşturulur
      async createUsers(req:Request ,res:Response):Promise<Response>{
+           let results;
+        try{
+
+             const newUser:any = getRepository(User).create(req.body);
+          // newUser.password=await bcrypt.hash(newUser.password,5);
            
-            const newUser = getRepository(User).create(req.body);
-            const results=await getRepository(User).save(newUser);
-        
-        return res.json(results);
+            
+            
+            results=await getRepository(User).save(newUser);
+
+           }catch(err){
+               console.log(err+"hata");
+           }
+          return res.json(results);
         }
 
 
@@ -53,19 +64,29 @@ export  class Users {
      //kullanıcı login
      async loginUser(req:Request,res:Response):Promise<Response>{
        
-         let eposta=await getRepository(User).findOne(req.body.eposta);
-         let password=await getRepository(User).findOne(req.body.password);
-        let result="";
+        //const epostaJson:any= {"eposta":req.body.eposta}; 
+        //const passwordJson:any= {"password":req.body.password}; 
+        
+        //let eposta=await getRepository(User).findOne({req.body.eposta});
+         //let password=await getRepository(User).findOne(passwordJson);
 
-           if(eposta&&password){
-               result="kullanıcı girişi yapıldı";
-           }else{
-                result="hata";
-            }
+         let token:any;
+         let err:any;
+         const find:any=await getRepository(User).findOne(req.body);
+        // find.password= await bcrypt.compare(req.body.password,find.password);
 
-       
-   return res.json(result);
+         if(find){
+             token= await jwt.sign({id:find.id,email:find.eposta,firstName:find.firstName,lastName:find.lastName},'1234567!+^&%+/(^&+/safjshfbaösmç.mşlkşlkd',{expiresIn:'1h'});
+            err=false;  
+         }else{
+            err=true;
+            console.log(err);
+         }
+         
+
+         return res.json({"user":find,token,err});
      }
+
 
     }
 

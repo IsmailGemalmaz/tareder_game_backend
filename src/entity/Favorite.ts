@@ -7,10 +7,20 @@ export  class  Favorite {
     @PrimaryGeneratedColumn()
     id: number;
 
-    
+     @Column()
+    currency: string;
 
     @Column()
-    currency: string;
+    name: string;
+
+    @Column()
+    price: string;
+
+    @Column()
+    market_cap: string;
+
+    
+
 
 
 }

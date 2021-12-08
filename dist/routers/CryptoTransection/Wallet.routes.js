@@ -6,4 +6,5 @@ var Wallet_1 = require("../../controller/CryptoTransection/Wallet");
 var router = express_1.Router();
 var wallet = new Wallet_1.Wallet;
 router.post("/postwallet", wallet.createWallet);
+router.get("/get", wallet.getWallet);
 exports.default = router;

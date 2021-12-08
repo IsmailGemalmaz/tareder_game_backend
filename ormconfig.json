@@ -3,10 +3,9 @@
     "host": "localhost",
     "port": 3306,
     "username": "root",
-    "password": "Şifreniz2020*-",
+    "password": "toor123",
     "database": "crypto",
     "entities":["dist/entity/**/*.js"],
     "synchronize":true
 
-
- }
+}

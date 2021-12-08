@@ -40,22 +40,30 @@ exports.Favorites = void 0;
 var typeorm_1 = require("typeorm");
 var Favorite_1 = require("../../entity/Favorite");
 var axios = require("axios").default;
-var data = axios.get("https://api.nomics.com/v1/currencies/ticker?key=a8a3452e71305947867f9f04df8fd319&ids=BTC")
-    .then(function (response) { console.log(response.data[0]); })
-    .catch(function (err) { console.log(err); });
 var favorite = new Favorite_1.Favorite;
 var Favorites = /** @class */ (function () {
     function Favorites() {
     }
     Favorites.prototype.createFavorite = function (req, res) {
         return __awaiter(this, void 0, void 0, function () {
-            var newFavorite, results;
+            var name, currency, price, market_cap, obj, newFavorite, results;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
-                        newFavorite = typeorm_1.getRepository(Favorite_1.Favorite).create(req.body);
-                        return [4 /*yield*/, typeorm_1.getRepository(Favorite_1.Favorite).save(newFavorite)];
+                        currency = req.body.currency;
+                        return [4 /*yield*/, axios.get("https://api.nomics.com/v1/currencies/ticker?key=a8a3452e71305947867f9f04df8fd319&ids=" + currency)
+                                .then(function (response) {
+                                name = response.data[0].name;
+                                price = response.data[0].price;
+                                market_cap = response.data[0].market_cap;
+                            })
+                                .catch(function (err) { console.log(err); })];
                     case 1:
+                        _a.sent();
+                        obj = JSON.parse('{"name" :"' + name + '", "currency" : " ' + currency + '","price" :"' + price + '","market_cap":"' + market_cap + '"}');
+                        newFavorite = typeorm_1.getRepository(Favorite_1.Favorite).create(obj);
+                        return [4 /*yield*/, typeorm_1.getRepository(Favorite_1.Favorite).save(newFavorite)];
+                    case 2:
                         results = _a.sent();
                         return [2 /*return*/, res.json(results)];
                 }

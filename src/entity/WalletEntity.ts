@@ -1,4 +1,4 @@
-import { Entity, PrimaryGeneratedColumn, Column, Double } from "typeorm";
+import { Entity, PrimaryGeneratedColumn, Column } from "typeorm";
 
 
 @Entity()
@@ -8,9 +8,16 @@ export class WalletEntity {
     id: number;
 
     
-
-    @Column()
+     @Column()
     currency: string;
+
+     @Column()
+    price: string;
+
+     @Column()
+     name: string;
+
+
 
 
 }

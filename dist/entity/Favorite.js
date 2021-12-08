@@ -22,6 +22,18 @@ var Favorite = /** @class */ (function () {
         typeorm_1.Column(),
         __metadata("design:type", String)
     ], Favorite.prototype, "currency", void 0);
+    __decorate([
+        typeorm_1.Column(),
+        __metadata("design:type", String)
+    ], Favorite.prototype, "name", void 0);
+    __decorate([
+        typeorm_1.Column(),
+        __metadata("design:type", String)
+    ], Favorite.prototype, "price", void 0);
+    __decorate([
+        typeorm_1.Column(),
+        __metadata("design:type", String)
+    ], Favorite.prototype, "market_cap", void 0);
     Favorite = __decorate([
         typeorm_1.Entity()
     ], Favorite);

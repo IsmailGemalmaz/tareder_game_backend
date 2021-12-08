@@ -8,7 +8,7 @@ import authRoutes from './routers/User Transection/User.routes'
 import walletRoutes from './routers/CryptoTransection/Wallet.routes';
 import transectionHistory from './routers/CryptoTransection/TransectionHistory.routes';
 import favorites from './routers/CryptoTransection/Favorites.routes';
-
+import passport from 'passport';
 dotenv.config();
 const app =express();
 createConnection();
@@ -21,6 +21,8 @@ app.use(express.json());
 //routers
 app.use('/api/v1/user',authRoutes);
 app.use('/api/v1/crypto',walletRoutes,transectionHistory,favorites);
+
+
 
 app.listen(process.env.PORT,()=>{
     console.log(`Server ${process.env.PORT} portundan ayaklandırıldı`);

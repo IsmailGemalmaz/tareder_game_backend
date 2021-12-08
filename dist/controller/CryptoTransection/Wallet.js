@@ -39,24 +39,88 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.Wallet = void 0;
 var typeorm_1 = require("typeorm");
 var WalletEntity_1 = require("../../entity/WalletEntity");
+var axios = require("axios").default;
+var walletEntity = new WalletEntity_1.WalletEntity;
 var Wallet = /** @class */ (function () {
     function Wallet() {
     }
     Wallet.prototype.createWallet = function (req, res) {
         return __awaiter(this, void 0, void 0, function () {
-            var newFavorite, results;
+            var name, currency, price, obj, newWallet, results;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
-                        newFavorite = typeorm_1.getRepository(WalletEntity_1.WalletEntity).create(req.body);
-                        return [4 /*yield*/, typeorm_1.getRepository(WalletEntity_1.WalletEntity).save(newFavorite)];
+                        currency = req.body.currency;
+                        return [4 /*yield*/, axios.get("https://api.nomics.com/v1/currencies/ticker?key=a8a3452e71305947867f9f04df8fd319&ids=" + currency)
+                                .then(function (response) {
+                                name = response.data[0].name;
+                                price = response.data[0].price;
+                            })
+                                .catch(function (err) { console.log(err); })];
                     case 1:
+                        _a.sent();
+                        obj = JSON.parse('{"name" :"' + name + '", "currency" : " ' + currency + '","price" :"' + price + '"}');
+                        newWallet = typeorm_1.getRepository(WalletEntity_1.WalletEntity).create(obj);
+                        return [4 /*yield*/, typeorm_1.getRepository(WalletEntity_1.WalletEntity).save(newWallet)];
+                    case 2:
                         results = _a.sent();
                         return [2 /*return*/, res.json(results)];
                 }
             });
         });
     };
+    Wallet.prototype.getWallet = function (req, res) {
+        return __awaiter(this, void 0, void 0, function () {
+            var result;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0: return [4 /*yield*/, typeorm_1.getRepository(WalletEntity_1.WalletEntity).find()];
+                    case 1:
+                        result = _a.sent();
+                        return [2 /*return*/, res.json({ "wallet": result })];
+                }
+            });
+        });
+    };
+    Wallet.prototype.algoritmaWallet = function () {
+        return __awaiter(this, void 0, void 0, function () {
+            return __generator(this, function (_a) {
+                return [2 /*return*/];
+            });
+        });
+    };
     return Wallet;
 }());
 exports.Wallet = Wallet;
+/*
+
+async createWallet(req:Request,res:Response):Promise<Response>{
+
+    
+    axios.get("https://api.nomics.com/v1/currencies/ticker?key=a8a3452e71305947867f9f04df8fd319&ids="+req.body.currency)
+   .then(function(response:any){
+       console.log(response.data[0])
+     
+      })
+   .catch(function(err:any){console.log(err)});
+
+   let obj:MyObj=JSON.parse('{"name" :"bitcoin", "currency" : '+ '"' +req.body.currency+'"}');
+  
+    const newWallet = getRepository(WalletEntity).create(obj);
+    const results=await getRepository(WalletEntity).save(newWallet);
+   
+ 
+
+return res.json(results);
+}
+
+*/
+/*
+axios.get("https://api.nomics.com/v1/currencies/ticker?key=a8a3452e71305947867f9f04df8fd319&ids="+req.body.currency)
+.then(function(response:any){
+    console.log(response.data[0])
+  
+   })
+.catch(function(err:any){console.log(err)});
+
+*/ 
