@@ -1,5 +1,5 @@
 import {Router} from 'express';
-import {Favorites} from '../../controller/CryptoTransection/Favorites';
+import {Favorites} from '../controller/Favorites';
 
 const router=Router();
 

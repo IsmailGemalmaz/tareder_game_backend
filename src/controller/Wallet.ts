@@ -1,6 +1,6 @@
 import {Request,Response} from 'express';
 import {Entity, getRepository} from 'typeorm';
-import {WalletEntity} from '../../entity/WalletEntity';
+import {WalletEntity} from '../entity/WalletEntity';
 
 
 const axios=require("axios").default;

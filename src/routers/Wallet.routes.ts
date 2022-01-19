@@ -1,5 +1,5 @@
 import {Router} from 'express';
-import { Wallet } from '../../controller/CryptoTransection/Wallet';
+import { Wallet } from '../controller/Wallet';
 //import {Users} from '../../controller/CryptoTransection/Wallet';
 const router=Router();
 

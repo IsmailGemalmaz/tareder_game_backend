@@ -2,7 +2,7 @@ import { Console } from 'console';
 import {NextFunction, request, Request,Response} from 'express';
 import { get } from 'http';
 import {Entity, getRepository} from 'typeorm';
-import {Favorite} from '../../entity/Favorite';
+import {Favorite} from '../entity/Favorite';
 
 const axios=require("axios").default;
 

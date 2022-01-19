@@ -58,13 +58,12 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.Users = void 0;
 var typeorm_1 = require("typeorm");
 var User_1 = require("../entity/User");
-var nodemailer = __importStar(require("nodemailer"));
+var jwt = __importStar(require("jsonwebtoken"));
 var user = new User_1.User;
-
 var Users = /** @class */ (function () {
     function Users() {
     }
-    //tüm kullanıcılar listelenir
+    //   //tüm kullanıcılar listelenir
     Users.prototype.getUsers = function (req, res) {
         return __awaiter(this, void 0, void 0, function () {
             var users;
@@ -94,56 +93,30 @@ var Users = /** @class */ (function () {
         });
     };
     ;
-    //kullanıcı oluşturulur
+    //  //kullanıcı oluşturulur
     Users.prototype.createUsers = function (req, res) {
         return __awaiter(this, void 0, void 0, function () {
-            var newUser, results, jwtInfo, tranporter_1;
+            var results, newUser, err_1;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
+                        _a.trys.push([0, 2, , 3]);
                         newUser = typeorm_1.getRepository(User_1.User).create(req.body);
                         return [4 /*yield*/, typeorm_1.getRepository(User_1.User).save(newUser)];
                     case 1:
+                        // newUser.password=await bcrypt.hash(newUser.password,5);
                         results = _a.sent();
-                        try {
-                            jwtInfo = {
-                                id: user.id,
-                                mail: user.eposta
-                            };
-                            tranporter_1 = nodemailer.createTransport({
-                                service: 'gmail',
-                                auth: {
-                                    user: 'isgsoftware9@gmail.com',
-                                    pass: "Ismail123!'."
-                                }
-                            });
-                            tranporter_1.sendMail({
-                                //bu mail kimden gitti  
-                                from: 'Treading Game<isgsoftware9@gmail.com>',
-                                //kime gidecek
-                                to: user.eposta,
-                                //email konusu
-                                subject: 'Emailni onayla',
-                                //email yazısı
-                                text: "Treading Game oyunu için Emailni onayla"
-                            }, function (err, info) {
-                                if (err) {
-                                    console.log("bir hata var" + err);
-                                }
-                                tranporter_1.close();
-                            });
-                            //----------------------
-                        }
-                        catch (err) {
-                            console.log("hata" + err);
-                        }
-                        return [2 /*return*/, res.json(results)];
+                        return [3 /*break*/, 3];
+                    case 2:
+                        err_1 = _a.sent();
+                        console.log(err_1 + "hata");
+                        return [3 /*break*/, 3];
+                    case 3: return [2 /*return*/, res.json(results)];
                 }
             });
         });
     };
-    ;
-    //kullanıcı güncellenir
+    //   //kullanıcı güncellenir
     Users.prototype.updateUser = function (req, res) {
         return __awaiter(this, void 0, void 0, function () {
             var user, results;
@@ -163,7 +136,7 @@ var Users = /** @class */ (function () {
             });
         });
     };
-    //kullanıcı silinir
+    // //kullanıcı silinir
     Users.prototype.deleteUser = function (req, res) {
         return __awaiter(this, void 0, void 0, function () {
             var result;
@@ -177,6 +150,65 @@ var Users = /** @class */ (function () {
             });
         });
     };
+    //kullanıcı login
+    Users.prototype.loginUser = function (req, res) {
+        return __awaiter(this, void 0, void 0, function () {
+            var token, err, find;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0: return [4 /*yield*/, typeorm_1.getRepository(User_1.User).findOne(req.body)];
+                    case 1:
+                        find = _a.sent();
+                        if (!find) return [3 /*break*/, 3];
+                        return [4 /*yield*/, jwt.sign({ id: find.id, email: find.eposta, firstName: find.firstName, lastName: find.lastName }, '1234567!+^&%+/(^&+/safjshfbaösmç.mşlkşlkd', { expiresIn: '1h' })];
+                    case 2:
+                        token = _a.sent();
+                        err = false;
+                        return [3 /*break*/, 4];
+                    case 3:
+                        err = true;
+                        console.log(err);
+                        _a.label = 4;
+                    case 4: return [2 /*return*/, res.json({ "user": find, token: token, err: err })];
+                }
+            });
+        });
+    };
     return Users;
 }());
 exports.Users = Users;
+// try{
+//     //jwt işlemleri
+//     const jwtInfo={
+//         id:user.id,
+//         mail:user.eposta
+//     }
+//     //const jwtToken=jwt.sign(jwtInfo,'35^+AHVT!^+1234^ALMS',{expiresIn:'1d'});
+//     //-----------------
+//     //MAİL gönderme işlemleri
+//         let tranporter=nodemailer.createTransport({
+//             service:'gmail',
+//             auth:{
+//                 user:'isgsoftware9@gmail.com',
+//                 pass:"Ismail123!'."
+//             }
+//         });
+//         tranporter.sendMail({
+//         //bu mail kimden gitti  
+//         from:'Treading Game<isgsoftware9@gmail.com>',
+//         //kime gidecek
+//         to:user.eposta,
+//         //email konusu
+//         subject:'Emailni onayla',
+//         //email yazısı
+//         text:"Treading Game oyunu için Emailni onayla"
+//         },(err,info)=>{
+//             if(err){
+//                 console.log("bir hata var"+err);
+//             }
+//             tranporter.close();
+//         });
+//          //----------------------
+// }catch(err){
+//     console.log("hata"+err);
+// }

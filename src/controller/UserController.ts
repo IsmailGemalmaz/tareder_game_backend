@@ -1,6 +1,6 @@
 import { Request,Response} from 'express';
 import {getRepository} from 'typeorm';
-import {User} from '../../entity/User';
+import {User} from '../entity/User';
 import * as jwt from 'jsonwebtoken';
 import * as nodemailer from 'nodemailer';
 import * as bcrypt from 'bcrypt';

@@ -4,10 +4,10 @@ import express from 'express';
 import morgan from 'morgan';
 import cors from 'cors';
 import {createConnection} from 'typeorm';
-import authRoutes from './routers/User Transection/User.routes'
-import walletRoutes from './routers/CryptoTransection/Wallet.routes';
-import transectionHistory from './routers/CryptoTransection/TransectionHistory.routes';
-import favorites from './routers/CryptoTransection/Favorites.routes';
+import authRoutes from './routers/User.routes'
+import walletRoutes from './routers/Wallet.routes';
+import transectionHistory from './routers/TransectionHistory.routes';
+import favorites from './routers/Favorites.routes';
 import passport from 'passport';
 dotenv.config();
 const app =express();

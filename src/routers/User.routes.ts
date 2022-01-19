@@ -1,5 +1,5 @@
 import {Router} from 'express';
-import {Users} from '../../controller/UserTransection/UserController'
+import {Users} from '../controller/UserController'
 const router=Router();
 
 const user=new Users;
