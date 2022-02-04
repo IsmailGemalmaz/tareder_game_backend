@@ -45,3 +45,4 @@ app.use('/api/v1/crypto', Wallet_routes_1.default, TransectionHistory_routes_1.d
 app.listen(process.env.PORT, function () {
     console.log("Server " + process.env.PORT + " portundan ayakland\u0131r\u0131ld\u0131");
 });
+//SELECT*FROM wallet_entity JOIN user ON wallet_entity.userId=user.id

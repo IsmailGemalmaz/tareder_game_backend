@@ -2,12 +2,12 @@ import { Entity, PrimaryGeneratedColumn, Column, Double } from "typeorm";
 
 
 @Entity()
-export  class  Favorite {
+export class Favorite {
 
     @PrimaryGeneratedColumn()
     id: number;
 
-     @Column()
+    @Column()
     currency: string;
 
     @Column()
@@ -19,7 +19,7 @@ export  class  Favorite {
     @Column()
     market_cap: string;
 
-    
+
 
 
 

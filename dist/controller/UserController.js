@@ -59,6 +59,7 @@ exports.Users = void 0;
 var typeorm_1 = require("typeorm");
 var User_1 = require("../entity/User");
 var jwt = __importStar(require("jsonwebtoken"));
+var bcrypt = __importStar(require("bcrypt"));
 var user = new User_1.User;
 var Users = /** @class */ (function () {
     function Users() {
@@ -96,22 +97,25 @@ var Users = /** @class */ (function () {
     //  //kullanıcı oluşturulur
     Users.prototype.createUsers = function (req, res) {
         return __awaiter(this, void 0, void 0, function () {
-            var results, newUser, err_1;
-            return __generator(this, function (_a) {
-                switch (_a.label) {
+            var results, newUser, _a, err_1;
+            return __generator(this, function (_b) {
+                switch (_b.label) {
                     case 0:
-                        _a.trys.push([0, 2, , 3]);
+                        _b.trys.push([0, 3, , 4]);
                         newUser = typeorm_1.getRepository(User_1.User).create(req.body);
-                        return [4 /*yield*/, typeorm_1.getRepository(User_1.User).save(newUser)];
+                        _a = newUser;
+                        return [4 /*yield*/, bcrypt.hash(newUser.password, 5)];
                     case 1:
-                        // newUser.password=await bcrypt.hash(newUser.password,5);
-                        results = _a.sent();
-                        return [3 /*break*/, 3];
+                        _a.password = _b.sent();
+                        return [4 /*yield*/, typeorm_1.getRepository(User_1.User).save(newUser)];
                     case 2:
-                        err_1 = _a.sent();
+                        results = _b.sent();
+                        return [3 /*break*/, 4];
+                    case 3:
+                        err_1 = _b.sent();
                         console.log(err_1 + "hata");
-                        return [3 /*break*/, 3];
-                    case 3: return [2 /*return*/, res.json(results)];
+                        return [3 /*break*/, 4];
+                    case 4: return [2 /*return*/, res.json(results)];
                 }
             });
         });
@@ -153,23 +157,38 @@ var Users = /** @class */ (function () {
     //kullanıcı login
     Users.prototype.loginUser = function (req, res) {
         return __awaiter(this, void 0, void 0, function () {
-            var token, err, find;
+            var token, err, errStatment, email, password, find, id, cmp;
             return __generator(this, function (_a) {
                 switch (_a.label) {
-                    case 0: return [4 /*yield*/, typeorm_1.getRepository(User_1.User).findOne(req.body)];
+                    case 0:
+                        email = req.body.email;
+                        password = req.body.password;
+                        return [4 /*yield*/, typeorm_1.getRepository(User_1.User).findOne({ "email": email })];
                     case 1:
                         find = _a.sent();
-                        if (!find) return [3 /*break*/, 3];
-                        return [4 /*yield*/, jwt.sign({ id: find.id, email: find.eposta, firstName: find.firstName, lastName: find.lastName }, '1234567!+^&%+/(^&+/safjshfbaösmç.mşlkşlkd', { expiresIn: '1h' })];
+                        id = find.id;
+                        if (!find) return [3 /*break*/, 6];
+                        return [4 /*yield*/, bcrypt.compare(password, find.password)];
                     case 2:
+                        cmp = _a.sent();
+                        if (!cmp) return [3 /*break*/, 4];
+                        return [4 /*yield*/, jwt.sign({ id: find.id, email: find.email, firstName: find.firstName, lastName: find.lastName }, '1234567!+^&%+/(^&+/safjshfbaösmç.mşlkşlkd', { expiresIn: '7d' })];
+                    case 3:
                         token = _a.sent();
                         err = false;
-                        return [3 /*break*/, 4];
-                    case 3:
+                        return [3 /*break*/, 5];
+                    case 4:
+                        errStatment = "errPassword";
+                        console.log(errStatment);
                         err = true;
-                        console.log(err);
-                        _a.label = 4;
-                    case 4: return [2 /*return*/, res.json({ "user": find, token: token, err: err })];
+                        _a.label = 5;
+                    case 5: return [3 /*break*/, 7];
+                    case 6:
+                        err = true;
+                        errStatment = "errEmail";
+                        console.log(errStatment);
+                        _a.label = 7;
+                    case 7: return [2 /*return*/, res.json({ token: token, err: err, errStatment: errStatment, id: id })];
                 }
             });
         });

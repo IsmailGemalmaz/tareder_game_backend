@@ -1,94 +1,103 @@
-import { Request,Response} from 'express';
-import {getRepository} from 'typeorm';
-import {User} from '../entity/User';
+import { Request, Response } from 'express';
+import { Any, getRepository } from 'typeorm';
+import { User } from '../entity/User';
 import * as jwt from 'jsonwebtoken';
 import * as nodemailer from 'nodemailer';
 import * as bcrypt from 'bcrypt';
 import { Console } from 'console';
+import passport from 'passport';
 
-const user=new User;
+const user = new User;
 
-export  class Users {
-    
+export class Users {
+
     //   //tüm kullanıcılar listelenir
-    async  getUsers(req:Request ,res:Response): Promise<Response>{
-      const users= await getRepository(User).find();
-          return res.json(users);
-      };
-     
-      //id si verilen kullanıcı listelenir
-      async  getUser(req:Request ,res:Response): Promise<Response>{
-         const result= await getRepository(User).findOne(req.params.id);
-      return res.json(result);
-     };
+    async getUsers(req: Request, res: Response): Promise<Response> {
+        const users = await getRepository(User).find();
+
+        return res.json(users);
+    };
+
+    //id si verilen kullanıcı listelenir
+    async getUser(req: Request, res: Response): Promise<Response> {
+        const result = await getRepository(User).findOne(req.params.id);
+
+        return res.json(result);
+    };
 
     //  //kullanıcı oluşturulur
-     async createUsers(req:Request ,res:Response):Promise<Response>{
-           let results;
-        try{
-
-             const newUser:any = getRepository(User).create(req.body);
-          // newUser.password=await bcrypt.hash(newUser.password,5);
-           
-            
-            
-            results=await getRepository(User).save(newUser);
-
-           }catch(err){
-               console.log(err+"hata");
-           }
-          return res.json(results);
+    async createUsers(req: Request, res: Response): Promise<Response> {
+        let results;
+        try {
+            const newUser: any = getRepository(User).create(req.body);
+             newUser.password=await bcrypt.hash(newUser.password,5);
+            results = await getRepository(User).save(newUser);
+        } catch (err) {
+            console.log(err + "hata");
         }
-
-
+        return res.json(results);
+    }
 
     //   //kullanıcı güncellenir
-    async updateUser(req:Request,res:Response):Promise<Response>{
-        const user=await getRepository(User).findOne(req.params.id);
-         if(user){
-           getRepository(User).merge(user,req.body);
-            const results=await getRepository(User).save(user);
-           return res.json(results);
+    async updateUser(req: Request, res: Response): Promise<Response> {
+        const user = await getRepository(User).findOne(req.params.id);
+        if (user) {
+            getRepository(User).merge(user, req.body);
+            const results = await getRepository(User).save(user);
+
+            return res.json(results);
         }
 
-        return res.status(404).json({msg:'Böyle bir kullanıcı bulunamadı'})
-     }  
+        return res.status(404).json({ msg: 'Böyle bir kullanıcı bulunamadı' })
+    }
 
     // //kullanıcı silinir
-    async deleteUser(req:Request,res:Response):Promise<Response>{
-         const result= await getRepository(User).delete(req.params.id);
-       
-         return res.json(result);
+    async deleteUser(req: Request, res: Response): Promise<Response> {
+        const result = await getRepository(User).delete(req.params.id);
+
+        return res.json(result);
     }
 
-     //kullanıcı login
-     async loginUser(req:Request,res:Response):Promise<Response>{
-       
+    //kullanıcı login
+    async loginUser(req: Request, res: Response): Promise<Response> {
+
         //const epostaJson:any= {"eposta":req.body.eposta}; 
         //const passwordJson:any= {"password":req.body.password}; 
-        
+
         //let eposta=await getRepository(User).findOne({req.body.eposta});
-         //let password=await getRepository(User).findOne(passwordJson);
+        //let password=await getRepository(User).findOne(passwordJson);
 
-         let token:any;
-         let err:any;
-         const find:any=await getRepository(User).findOne(req.body);
-        // find.password= await bcrypt.compare(req.body.password,find.password);
-
-         if(find){
-             token= await jwt.sign({id:find.id,email:find.eposta,firstName:find.firstName,lastName:find.lastName},'1234567!+^&%+/(^&+/safjshfbaösmç.mşlkşlkd',{expiresIn:'1h'});
-            err=false;  
-         }else{
-            err=true;
-            console.log(err);
-         }
-         
-
-         return res.json({"user":find,token,err});
-     }
-
-
+        let token: any;
+        let err: any;
+        let errStatment:any;
+        
+        let email:string=req.body.email;
+        let password:string=req.body.password;
+        const find: any = await getRepository(User).findOne({"email":email});
+        let id=find.id
+        if (find) {
+            const cmp = await bcrypt.compare(password, find.password);
+            if(cmp){
+                token = await jwt.sign({ id: find.id, email: find.email, firstName: find.firstName, lastName: find.lastName }, '1234567!+^&%+/(^&+/safjshfbaösmç.mşlkşlkd', { expiresIn: '7d' });
+                err = false;
+            }else{
+               errStatment="errPassword"
+                console.log(errStatment)
+                err = true;
+            }
+        } else{
+            err = true;
+            errStatment="errEmail"
+            console.log(errStatment)
+        }
+       
+        return res.json({token, err ,errStatment,id});
     }
+     
+
+}
+
+
 
 
 
@@ -103,7 +112,7 @@ export  class Users {
 //     //const jwtToken=jwt.sign(jwtInfo,'35^+AHVT!^+1234^ALMS',{expiresIn:'1d'});
 //     //-----------------
 //     //MAİL gönderme işlemleri
-    
+
 //         let tranporter=nodemailer.createTransport({
 //             service:'gmail',
 //             auth:{
@@ -125,9 +134,9 @@ export  class Users {
 //             if(err){
 //                 console.log("bir hata var"+err);
 //             }
-        
+
 //             tranporter.close();
-        
+
 //         });
 
 //          //----------------------

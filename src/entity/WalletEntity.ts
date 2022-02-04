@@ -6,18 +6,19 @@ export class WalletEntity {
 
     @PrimaryGeneratedColumn()
     id: number;
-
     
-     @Column()
+    @Column()
     currency: string;
 
-     @Column()
+    @Column()
     price: string;
 
-     @Column()
-     name: string;
+    @Column()
+    name: string;
 
+    @Column()
+    userId: number;
 
-
-
+    @Column()
+    amount: string;
 }

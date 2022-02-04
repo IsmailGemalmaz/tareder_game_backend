@@ -30,6 +30,14 @@ var WalletEntity = /** @class */ (function () {
         typeorm_1.Column(),
         __metadata("design:type", String)
     ], WalletEntity.prototype, "name", void 0);
+    __decorate([
+        typeorm_1.Column(),
+        __metadata("design:type", Number)
+    ], WalletEntity.prototype, "userId", void 0);
+    __decorate([
+        typeorm_1.Column(),
+        __metadata("design:type", String)
+    ], WalletEntity.prototype, "amount", void 0);
     WalletEntity = __decorate([
         typeorm_1.Entity()
     ], WalletEntity);
